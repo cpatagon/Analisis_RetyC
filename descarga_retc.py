@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-# URL del dataset
+# URL del dataset ocupado
 URL = "https://datosretc.mma.gob.cl/dataset/emisiones-al-aire-de-fuente-puntuales"
 
 # Carpeta de destino
