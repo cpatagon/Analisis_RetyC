@@ -1,0 +1,20 @@
+﻿grupo_canonico,png_path
+Ammonia (NH3),/mnt/data/plots_contaminantes/Ammonia_NH3.png
+Arsenic (As),/mnt/data/plots_contaminantes/Arsenic_As.png
+Benzene,/mnt/data/plots_contaminantes/Benzene.png
+Black Carbon,/mnt/data/plots_contaminantes/Black_Carbon.png
+Carbon dioxide (CO2),/mnt/data/plots_contaminantes/Carbon_dioxide_CO2.png
+Carbon monoxide (CO),/mnt/data/plots_contaminantes/Carbon_monoxide_CO.png
+Lead (Pb),/mnt/data/plots_contaminantes/Lead_Pb.png
+Mercury (Hg),/mnt/data/plots_contaminantes/Mercury_Hg.png
+Methane,/mnt/data/plots_contaminantes/Methane.png
+Nitrogen oxides (NOx),/mnt/data/plots_contaminantes/Nitrogen_oxides_NOx.png
+Nitrous oxide (N2O),/mnt/data/plots_contaminantes/Nitrous_oxide_N2O.png
+PCDD/F,/mnt/data/plots_contaminantes/PCDD_F.png
+PM10,/mnt/data/plots_contaminantes/PM10.png
+PM2.5,/mnt/data/plots_contaminantes/PM2.5.png
+"Particulate matter (PM, sin tamaño)",/mnt/data/plots_contaminantes/Particulate_matter_PM_sin_tama_o.png
+Sulfur dioxide (SO2),/mnt/data/plots_contaminantes/Sulfur_dioxide_SO2.png
+Sulfur oxides (SOx) [familia],/mnt/data/plots_contaminantes/Sulfur_oxides_SOx_familia.png
+Toluene,/mnt/data/plots_contaminantes/Toluene.png
+Volatile organic compounds (VOC),/mnt/data/plots_contaminantes/Volatile_organic_compounds_VOC.png

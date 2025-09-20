@@ -1,79 +1,160 @@
-# Descargador de Archivos RETC (Emisiones al Aire de Fuentes Puntuales)
+# Descargador RETC — Emisiones al Aire (Fuentes Puntuales)
 
-Este script en Python permite automatizar la descarga de los archivos **XLS/XLSX** y **CSV** publicados en el portal de datos del RETC del Ministerio del Medio Ambiente de Chile:
+Este proyecto incluye un script para **descargar automáticamente** los archivos publicados (CSV/XLS/XLSX) del dataset **“Emisiones al aire de fuentes puntuales”** del RETC (MMA Chile).
 
-👉 [Emisiones al aire de fuentes puntuales](https://datosretc.mma.gob.cl/dataset/emisiones-al-aire-de-fuente-puntuales)
+Dataset: *Emisiones al aire de fuente puntuales* – RETC
 
 ---
 
 ## 🎯 Objetivo
 
-Facilitar la obtención de los archivos históricos de emisiones al aire, sin necesidad de descargarlos manualmente desde la página web.  
-El script analiza el HTML del portal, identifica los enlaces disponibles a **.xls**, **.xlsx** y **.csv**, y los guarda en una carpeta local.
+Evitar descargas manuales: el script recorre la página del dataset, detecta los enlaces a archivos históricos y los guarda localmente en `datos/descargas_retc/`.
 
 ---
 
-## ⚙️ Características
+## 🧰 Requisitos
 
-- Descarga automática de todos los archivos publicados en el dataset.
-- Compatible con Linux (requiere Python 3).
-- Guarda los archivos en una carpeta llamada `descargas_retc`.
-- Reconstruye enlaces absolutos en caso de que estén definidos de forma relativa.
-- Uso de librerías estándar: `requests` y `BeautifulSoup4`.
+* **Python 3.8+**
+* Paquetes:
+
+  ```bash
+  pip install requests beautifulsoup4
+  ```
+* (Opcional para Excel):
+
+  ```bash
+  pip install openpyxl
+  ```
+
+> Si usas Conda:
+> `conda install -c conda-forge requests beautifulsoup4 openpyxl`
 
 ---
 
-## 📦 Requisitos
+## 📂 Estructura recomendada
 
-Antes de ejecutar el script asegúrate de tener instaladas las librerías necesarias:
-
-```bash
-sudo apt update
-sudo apt install python3-pip -y
-pip3 install requests beautifulsoup4
+```
+RetC/
+├── datos/
+│   └── descargas_retc/           # ← aquí se guardan las descargas
+├── src/
+│   └── descarga_retc.py          # ← script de descarga
+└── README.md
 ```
 
 ---
 
 ## 🚀 Uso
 
-1. Clona o descarga este repositorio (o simplemente guarda el script `descargar_retc.py` en tu carpeta de trabajo).
+Desde la **raíz del repositorio**:
 
-2. Dale permisos de ejecución:
+```bash
+# 1) Crear carpeta de salida (si no existe)
+mkdir -p datos/descargas_retc
 
-   ```bash
-   chmod +x descargar_retc.py
-   ```
-
-3. Ejecuta el script:
-
-   ```bash
-   ./descargar_retc.py
-   ```
-
-4. Una vez finalizado, los archivos descargados estarán en la carpeta:
-
-   ```
-   descargas_retc/
-   ```
-
----
-
-## 📂 Estructura de Archivos
-
-```
-.
-├── descargar_retc.py   # Script principal
-├── README.md           # Este archivo
-└── descargas_retc/     # Carpeta donde se guardan los archivos descargados
+# 2) Ejecutar el descargador
+python src/descarga_retc.py \
+  --url "https://datosretc.mma.gob.cl/dataset/emisiones-al-aire-de-fuente-puntuales" \
+  --out "datos/descargas_retc"
 ```
 
----
-
-## 📝 Notas
-
-- Si el portal actualiza los enlaces o cambia la estructura, puede ser necesario ajustar el script.
-- Recomendado revisar la integridad de los archivos descargados antes de procesarlos.
-- El script está pensado para uso académico y técnico, respetando siempre las políticas de uso de datos abiertos del MMA Chile.
+El script buscará enlaces a `.csv`, `.xls`, `.xlsx` y descargará todo en `datos/descargas_retc/`.
 
 ---
+
+## ⚙️ Opciones útiles
+
+* **Vista previa (sin descargar):**
+
+  ```bash
+  python src/descarga_retc.py --dry-run
+  ```
+
+* **Filtrar por nombre (regex):**
+  (ej.: solo EFP históricos y 2023)
+
+  ```bash
+  python src/descarga_retc.py --pattern "ruea-efp|ckan_ruea_2023"
+  ```
+
+* **Sobrescribir si ya existe + reintentos:**
+
+  ```bash
+  python src/descarga_retc.py --overwrite --retries 5
+  ```
+
+* **Cambiar carpeta de salida:**
+
+  ```bash
+  python src/descarga_retc.py --out "/ruta/a/otra/carpeta"
+  ```
+
+---
+
+## ✅ Verificación rápida
+
+Listar los primeros archivos descargados:
+
+```bash
+ls -lh datos/descargas_retc | head
+```
+
+Contar por tipo:
+
+```bash
+find datos/descargas_retc -type f -iname "*.csv"  | wc -l
+find datos/descargas_retc -type f -iname "*.xls"  | wc -l
+find datos/descargas_retc -type f -iname "*.xlsx" | wc -l
+```
+
+Revisar un CSV:
+
+```bash
+wc -l datos/descargas_retc/ruea-efp-2019-ckan.csv
+head -n 5 datos/descargas_retc/ruea-efp-2019-ckan.csv
+```
+
+---
+
+## 🧪 Notas y problemas comunes
+
+* **Cambios en la página del dataset:**
+  Si el HTML cambia, ajusta el parser en `src/descarga_retc.py` (el script ya intenta buscar también dentro de iframes).
+
+* **Errores de codificación al abrir CSV antiguos:**
+  Algunos no están en UTF-8. Con pandas:
+
+  ```python
+  pd.read_csv("archivo.csv", encoding="latin-1")
+  ```
+
+* **Conexión inestable:**
+  Usa `--retries` y vuelve a ejecutar. El script retoma archivo por archivo.
+
+---
+
+## ➡️ Pasos siguientes (opcional)
+
+Una vez descargados, puedes filtrar por región y consolidar:
+
+```bash
+# Filtrar por Región Metropolitana (ejemplo):
+python src/filtrado_region_todo.py --region "Metropolitana de Santiago"
+
+# Consolidar EFP 2005–2022:
+python src/consolidar_efp.py --indir datos/filtrados_region/CSV
+
+# Consolidar 2005–2023 (EFP + RUEA 2023):
+python src/consolidar_global_2005_2023.py \
+  --indir "datos/filtrados_region/CONSOLIDADOS" \
+  --efp-name EFP_RM_2005_2022_consolidado.csv \
+  --r23-name ruea-efp-2023-ckan_RM.csv \
+  --out CONSOLIDADO_RETC_2005-2023.csv
+```
+
+---
+
+## 📜 Licencia y fuente de datos
+
+* Los datos pertenecen al **RETC / Ministerio del Medio Ambiente (Chile)** y se rigen por su política de datos abiertos.
+* Este script se provee para fines técnicos/ académicos; por favor, cita la fuente y revisa siempre la vigencia del dataset.
